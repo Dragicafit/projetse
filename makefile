@@ -1,6 +1,6 @@
 CC      := gcc
 CCFLAGS := -Wall -g -std=c11 -m64
-LDFLAGS := -lm -lcrypto
+LDFLAGS := 
 
 TARGETS:= main
 MAINS  := $(addsuffix .o, $(TARGETS) )
