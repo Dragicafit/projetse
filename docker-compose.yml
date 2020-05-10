@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+    projet:
+        image: ubuntu
+        volumes:
+                - .:/projet_system:ro
+        command: tail -F anything
