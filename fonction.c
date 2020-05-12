@@ -55,36 +55,29 @@ void del_tag(char *f, char tag[]) {
   return;
 }
 
-char is_tag_user() {
-  uid_t uid = getuid();
-  int fd = open(".users", O_RDWR | O_CREAT | O_APPEND, 0600);
-  if (fd < 0) {
+char is_tag_user(int *fd, uid_t *uid) {
+  *uid = getuid();
+  *fd = open(".users", O_RDWR | O_CREAT | O_APPEND, 0600);
+  if (*fd < 0) {
     perror("Impossible d'ouvrir le fichier");
     return 0;
   }
   char buff[1024];
-  read(fd, buff, sizeof(buff));
+  read(*fd, buff, sizeof(buff));
   char id[10];
-  snprintf(id, 10, "%u\n", uid);
+  snprintf(*id, 10, "%u\n", *uid);
   if (memmem(&buff, sizeof(buff), id, sizeof(uid_t)) != NULL) {
     return 1;
   }
   return 0;
-  close(fd);
 }
 
 void add_user() {
-  uid_t uid = getuid();
-  int fd = open(".users", O_RDWR | O_CREAT | O_APPEND, 0600);
-  if (fd < 0) {
-    perror("Impossible de créer le fichier");
-    return;
-  }
-  char buff[1024];
-  read(fd, buff, sizeof(buff));
-  char id[10];
-  snprintf(id, 10, "%u\n", uid);
-  if (memmem(&buff, sizeof(buff), id, sizeof(uid_t)) == NULL) {
+  int fd;
+  uid_t uid;
+  if (!is_tag_user(&fd, &uid)) {
+    char id[10];
+    snprintf(id, 10, "%u\n", uid);
     write(fd, id, strlen(id));
   }
   close(fd);
