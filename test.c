@@ -32,7 +32,7 @@ displayInotifyEvent(struct inotify_event *i) {
 
 #define BUF_LEN (10 * (sizeof(struct inotify_event) + 300 + 1))
 
-int main(int argc, char *argv[]) {
+int test(int argc, char *argv[]) {
   int inotifyFd, wd, j;
   char buf[BUF_LEN] __attribute__((aligned(8)));
   int numRead;

@@ -1,16 +1,18 @@
-#include <linux/stat.h>
-#include <linux/types.h>
-#include <linux/xattr.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/xattr.h>
 #include <unistd.h>
 
-char user[10];
+#include "constantes.h"
+
+char user[TAILLE_USER];
 
 void add_tag(char *f, char tag[]) {
-  char val[sizeof(tag) + sizeof(user) + 1];
-  snprintf(val, sizeof(tag) + sizeof(user), "%s.%s", user, tag);
-  int set = setxattr(f, $val, "", 0);
+  char val[TAILLE_ATTR];
+  snprintf(val, TAILLE_ATTR, "%s.%s", user, tag);
+  int set = setxattr(f, val, "", 0, 0);
   if (set < 0) {
     perror("Erreur d'ajout du tag");
     return;
@@ -21,7 +23,7 @@ void add_tag(char *f, char tag[]) {
     perror("Erreur de lecture des droits...");
     return;
   }
-  if (!(sb.st_mod & S_IWGRP) && !(sb.st_mod & S_IWOTH)) return;
+  if (!(sb.st_mode & S_IWGRP) && !(sb.st_mode & S_IWOTH)) return;
   char c = '\0';
   while (c != 'y' || c != 'n') {
     printf(
@@ -30,9 +32,9 @@ void add_tag(char *f, char tag[]) {
     scanf("%c", &c);
   }
   if (c != 'n') return;
-  sb.st_mod |= S_IWGRP;
-  sb.st_mod |= S_IWOTH;
-  int mod = chmod(f, sb.st_mod);
+  sb.st_mode |= S_IWGRP;
+  sb.st_mode |= S_IWOTH;
+  int mod = chmod(f, sb.st_mode);
   if (mod < 0) {
     perror("Erreur de protection");
     return;
@@ -41,8 +43,8 @@ void add_tag(char *f, char tag[]) {
 }
 
 void del_tag(char *f, char tag[]) {
-  char val[sizeof(tag) + sizeof(user) + 1];
-  snprintf(val, sizeof(tag) + sizeof(user), "%s.%s", user, tag);
+  char val[TAILLE_ATTR];
+  snprintf(val, TAILLE_ATTR, "%s.%s", user, tag);
   int rm = removexattr(f, val);
   if (rm < 0) {
     perror("Erreur de sup tag");
