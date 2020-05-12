@@ -56,6 +56,19 @@ void del_tag(char *f, char tag[]) {
   return;
 }
 
+char is_tagged(const char *path) {
+  char list[100];
+  char list2[100];
+  char list3[100];
+  listxattr(path, list, sizeof(list));
+  while (1) {
+    int s = sscanf(list, "%[a-zA-Z0-9].%[a-zA-Z0-9]", list2, list3);
+    if (s == 2) return 1;
+    if (s == -1) return 0;
+  }
+  return 0;
+}
+
 char is_tag_user(int *fd, uid_t *uid) {
   *uid = getuid();
   *fd = open(".users", O_RDWR | O_CREAT | O_APPEND, 0600);
