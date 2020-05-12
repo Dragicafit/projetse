@@ -1,5 +1,8 @@
+#define _GNU_SOURCE
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
@@ -52,6 +55,21 @@ void del_tag(char *f, char tag[]) {
   return;
 }
 
-void add_user() {}
+void add_user() {
+  uid_t uid = getuid();
+  int fd = open(".users", O_RDWR | O_CREAT | O_APPEND, 0600);
+  if (fd < 0) {
+    perror("Impossible de créer le fichier");
+    return;
+  }
+  char buff[1024];
+  read(fd, buff, sizeof(buff));
+  char id[10];
+  snprintf(id, 10, "%u\n", uid);
+  if (memmem(&buff, sizeof(buff), id, sizeof(uid_t)) == NULL) {
+    write(fd, id, strlen(id));
+  }
+  close(fd);
+}
 
 void cp_tag(char *f) {}
