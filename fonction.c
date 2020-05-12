@@ -1,4 +1,6 @@
 #define _GNU_SOURCE
+#include "fonction.h"
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,7 +8,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
-#include <unistd.h>
 
 #include "constantes.h"
 
@@ -65,7 +66,7 @@ char is_tag_user(int *fd, uid_t *uid) {
   char buff[1024];
   read(*fd, buff, sizeof(buff));
   char id[10];
-  snprintf(*id, 10, "%u\n", *uid);
+  snprintf(id, 10, "%u\n", *uid);
   if (memmem(&buff, sizeof(buff), id, sizeof(uid_t)) != NULL) {
     return 1;
   }
