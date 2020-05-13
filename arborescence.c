@@ -21,7 +21,10 @@ void parcoursDossier(int inotifyFd, char basePath[]) {
   DIR *dir = opendir(basePath);
   int s;
 
-  if (!dir) handle_error("opendir");
+  if (!dir) {
+    perror("opendir");
+    return;
+  }
   ajouteDossier(inotifyFd, basePath);
 
   while ((dp = readdir(dir)) != NULL) {
