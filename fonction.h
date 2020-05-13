@@ -1,5 +1,5 @@
-#ifndef FONCTION
-#define FONCTION
+#ifndef DEF_FONCTION
+#define DEF_FONCTION
 
 #include <sys/types.h>
 #include <unistd.h>

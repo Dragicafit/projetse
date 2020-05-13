@@ -57,14 +57,17 @@ void del_tag(char *f, char tag[]) {
 }
 
 char is_tagged(const char *path) {
-  char list[100];
-  char list2[100];
-  char list3[100];
-  listxattr(path, list, sizeof(list));
-  while (1) {
-    int s = sscanf(list, "%[a-zA-Z0-9].%[a-zA-Z0-9]", list2, list3);
-    if (s == 2) return 1;
-    if (s == -1) return 0;
+  char list[TAILLE_LIST_ATTR];
+  ssize_t count = 0;
+  int add = 0;
+  int s;
+  ssize_t size = listxattr(path, list, TAILLE_LIST_ATTR);
+  if (size < 0) handle_error("Erreur de listage d'un tag");
+  if (size < 1) return 0;
+  while (count < size) {
+    s = sscanf(&list[count], "%*[a-zA-Z0-9]%n.%*[a-zA-Z0-9]", &add);
+    if (s == 0) return 1;
+    count += add + 1;
   }
   return 0;
 }
