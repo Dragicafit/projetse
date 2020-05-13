@@ -1,6 +1,5 @@
 
 #define _DEFAULT_SOURCE
-#include "arborescence.h"
 
 #include <dirent.h>
 #include <limits.h>
@@ -13,7 +12,7 @@
 #include <unistd.h>
 
 #include "constantes.h"
-#include "fonction.h"
+#include "modele.h"
 
 void parcoursDossier(int inotifyFd, char basePath[]) {
   char path[TAILLE_PATH];

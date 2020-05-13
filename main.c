@@ -10,9 +10,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "arborescence.h"
 #include "constantes.h"
-#include "fonction.h"
+#include "modele.h"
 
 static gchar **file_add;
 static gchar **file_del;
