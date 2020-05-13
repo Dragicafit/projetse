@@ -77,15 +77,18 @@ char is_tag_user(int *fd, uid_t *uid) {
   *fd = open(".users", O_RDWR | O_CREAT | O_APPEND, 0600);
   if (*fd < 0) {
     perror("Impossible d'ouvrir le fichier");
+    printf("0\n");
     return 0;
   }
   char buff[1024];
   read(*fd, buff, sizeof(buff));
   char id[10];
   snprintf(id, 10, "%u\n", *uid);
-  if (memmem(&buff, sizeof(buff), id, sizeof(uid_t)) != NULL) {
+  if (memmem(&buff, strlen(buff), id, strlen(id)) != NULL) {
+    printf("1\n");
     return 1;
   }
+  printf("0\n");
   return 0;
 }
 
@@ -100,4 +103,12 @@ void add_user() {
   close(fd);
 }
 
-void cp_tag(char *f) {}
+void cp_tag(char *f, char *target) {
+  int fd;
+  uid_t uid;
+  if (!is_tag_user(&fd, &uid)) {
+    execlp("cp", "cp", f, target, NULL);
+    return;
+  }
+  execlp("cp", "cp", "--preserve=xattr", f, target, NULL);
+}
