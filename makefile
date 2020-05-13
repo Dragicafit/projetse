@@ -1,6 +1,6 @@
 CC      := gcc
-CCFLAGS := -Wall -g -std=c11 -m64 $(shell pkg-config --cflags glib-2.0)
-LDFLAGS := $(shell pkg-config --libs glib-2.0)
+CCFLAGS := -Wall -g -std=c11 -m64 $(shell pkg-config --cflags glib-2.0 gtk+-3.0)
+LDFLAGS := $(shell pkg-config --libs glib-2.0 gtk+-3.0)
 
 TARGETS:= main
 MAINS  := $(addsuffix .o, $(TARGETS) )
