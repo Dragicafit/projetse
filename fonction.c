@@ -80,7 +80,7 @@ char is_tagged(const char *path) {
   return 0;
 }
 
-char has_tag(const char *path, char *tag) {
+char has_tag(const char *path, char tag[TAILLE_TAG]) {
   char l[TAILLE_LIST_ATTR];
   snprintf(l, TAILLE_LIST_ATTR, "user.%u.%s", getuid(), tag);
   return getxattr(path, l, NULL, NULL) >= 0;
@@ -111,6 +111,38 @@ void add_user() {
     write(fd, id, strlen(id));
   }
   close(fd);
+}
+
+void list_files_by_tag(char tag[],
+                       char path_list[TAILLE_FICHIER_ECOUTE_MAX][TAILLE_PATH]) {
+  int pos = 0;
+  for (int i = 0; i < TAILLE_FICHIER_ECOUTE_MAX; i++) {
+    if (has_tag(fichierEcoute[i], tag)) {
+      strcpy(path_list[pos++], fichierEcoute[i]);
+    }
+  }
+}
+
+void show_by_tag(char conj[TAILLE_LIST_ATTR][TAILLE_TAG],
+                 char dij[TAILLE_LIST_ATTR][TAILLE_TAG], int size_conj,
+                 int size_dij) {
+  int pos = 0;
+  for (int i = 0; i < nbFichierEcoute; i++) {
+    char test = 1;
+    for (int j = 0; j < size_conj; j++) {
+      if (!has_tag(fichierEcoute[i], conj[j])) {
+        test = 0;
+        break;
+      }
+    }
+    for (int j = 0; j < size_dij; j++) {
+      if (has_tag(fichierEcoute[i], dij[j])) {
+        test = 0;
+        break;
+      }
+    }
+    if (test) printf("%s\n", fichierEcoute[i]);
+  }
 }
 
 void cp_tag(char *f, char *target) {
