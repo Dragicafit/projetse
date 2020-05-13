@@ -17,6 +17,7 @@
 #define TAILLE_PATH 1024
 #define TAILLE_LIST_ATTR 1000
 #define TAILLE_ATTR TAILLE_TAG + TAILLE_USER + 1
+#define ENFANT_MAX 124
 
 #define BUF_LEN (10 * (sizeof(struct inotify_event) + 300 + 1))
 
