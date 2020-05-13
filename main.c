@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <glib.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
