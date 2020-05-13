@@ -10,5 +10,5 @@ char is_tagged(const char *path);
 char is_tag_user(int *fd, uid_t *uid);
 void add_user();
 void cp_tag(char *f, char *target);
-
+char has_tag(const char *path, char *tag);
 #endif
