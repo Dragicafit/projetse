@@ -9,9 +9,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "arborescence.h"
 #include "constantes.h"
-#include "fonction.h"
+#include "modele.h"
 
 static gchar **file_add;
 static gchar **file_del;
@@ -35,6 +34,20 @@ char fichierEcoute[TAILLE_FICHIER_ECOUTE_MAX][TAILLE_PATH];
 size_t nbFichierEcoute;
 
 int main(int argc, char *argv[]) {
+  struct tag *t[] = {initTag("t1"), initTag("t2"), initTag("t3"),
+                     initTag("t4")};
+  addEnfant(t[0], t[1]);
+  addEnfant(t[0], t[2]);
+  addEnfant(t[2], t[3]);
+  createHierarchieFile(t, 4);
+
+  int length;
+  readHierarchieFile(t, &length);
+
+  createHierarchieFile(t, 4);
+
+  return 0;
+
   GError *error = NULL;
   GOptionContext *context;
   context = g_option_context_new("- test");

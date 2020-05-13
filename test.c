@@ -1,7 +1,9 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/inotify.h>
+#include <unistd.h>
 
 static void /* Display information from inotify_event structure */
 displayInotifyEvent(struct inotify_event *i) {

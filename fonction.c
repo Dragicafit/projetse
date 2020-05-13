@@ -1,5 +1,4 @@
 #define _GNU_SOURCE
-#include "fonction.h"
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -8,19 +7,21 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
+#include <unistd.h>
 
 #include "constantes.h"
+#include "modele.h"
 
 char user[TAILLE_USER];
 
-void add_tag(char *path, char tag[]) {
+void add_tag(const char *path, struct tag *t) {
   int fd;
   uid_t uid;
   if (!is_tag_user(&fd, &uid)) return;
   close(fd);
-  char t[TAILLE_ATTR];
-  snprintf(t, TAILLE_ATTR, "user.%u.%s", uid, tag);
-  int set = setxattr(path, t, "", 0, 0);
+  char buff[TAILLE_ATTR];
+  snprintf(buff, TAILLE_ATTR, "user.%u.%s", uid, t->name);
+  int set = setxattr(path, buff, "", 0, 0);
   if (set < 0) {
     perror("Erreur d'ajout du tag");
     return;
@@ -50,18 +51,15 @@ void add_tag(char *path, char tag[]) {
   return;
 }
 
-void del_tag(char *f, char tag[]) {
+void del_tag(const char *path, struct tag *t) {
   int fd;
   uid_t uid;
   if (!is_tag_user(&fd, &uid)) return;
   close(fd);
-  char t[TAILLE_ATTR];
-  snprintf(t, TAILLE_ATTR, "user.%u.%s", uid, tag);
-  int rm = removexattr(f, t);
-  if (rm < 0) {
-    perror("Erreur de sup tag");
-  }
-  return;
+  char l[TAILLE_ATTR];
+  snprintf(l, TAILLE_ATTR, "user.%u.%s", uid, t->name);
+  if (removexattr(path, l) >= 0) return;
+  for (int i = 0; i < t->nbEnfant; i++) del_tag(path, t->enfants[i]);
 }
 
 char is_tagged(const char *path) {
@@ -80,10 +78,14 @@ char is_tagged(const char *path) {
   return 0;
 }
 
-char has_tag(const char *path, char *tag) {
+char has_tag(const char *path, struct tag *t) {
   char l[TAILLE_LIST_ATTR];
-  snprintf(l, TAILLE_LIST_ATTR, "user.%u.%s", getuid(), tag);
-  return getxattr(path, l, NULL, NULL) >= 0;
+  snprintf(l, TAILLE_LIST_ATTR, "user.%u.%s", getuid(), t->name);
+  if (getxattr(path, l, NULL, 0) >= 0) return 1;
+  for (int i = 0; i < t->nbEnfant; i++) {
+    if (has_tag(path, t->enfants[i])) return 1;
+  }
+  return 0;
 }
 
 char is_tag_user(int *fd, uid_t *uid) {
