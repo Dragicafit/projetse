@@ -12,7 +12,7 @@
 #include "constantes.h"
 #include "modele.h"
 
-void createHierarchieFile(struct tag *t[], int t_length) {
+void createHierarchieFile(tag *t[], int t_length) {
   const char *homedir = getenv("HOME");
   if ((homedir = getenv("HOME")) == NULL) {
     homedir = getpwuid(getuid())->pw_dir;
@@ -38,7 +38,7 @@ void createHierarchieFile(struct tag *t[], int t_length) {
   }
 }
 
-void createHierarchie(g_autoptr(GKeyFile) key_file, struct tag *t) {
+void createHierarchie(g_autoptr(GKeyFile) key_file, tag *t) {
   int i;
   gchar *list[ENFANT_MAX];
   for (i = 0; i < t->nbEnfant; i++) {
@@ -49,7 +49,7 @@ void createHierarchie(g_autoptr(GKeyFile) key_file, struct tag *t) {
   g_key_file_set_string_list(key_file, "tags", t->name, list, t->nbEnfant);
 }
 
-void readHierarchieFile(struct tag *tags[], int *tags_length) {
+void readHierarchieFile(tag *tags[], int *tags_length) {
   const char *homedir;
   if ((homedir = getenv("HOME")) == NULL) {
     homedir = getpwuid(getuid())->pw_dir;
@@ -83,7 +83,7 @@ void readHierarchieFile(struct tag *tags[], int *tags_length) {
       return;
     }
 
-    struct tag *newTag = initTag(name);
+    tag *newTag = initTag(name);
     tags[i] = newTag;
     *tags_length = i;
     createTagsHierarchie(key_file, error, tags[i]);
@@ -99,7 +99,7 @@ void readHierarchieFile(struct tag *tags[], int *tags_length) {
 }
 
 void createTagsHierarchie(g_autoptr(GKeyFile) key_file, g_autoptr(GError) error,
-                          struct tag *t) {
+                          tag *t) {
   gsize len;
   g_autofree gchar **val =
       g_key_file_get_string_list(key_file, "tags", t->name, &len, &error);

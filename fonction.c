@@ -14,7 +14,7 @@
 
 char user[TAILLE_USER];
 
-void add_tag(const char *path, struct tag *t) {
+void add_tag(const char *path, tag *t) {
   int fd;
   uid_t uid;
   if (!is_tag_user(&fd, &uid)) return;
@@ -51,7 +51,7 @@ void add_tag(const char *path, struct tag *t) {
   return;
 }
 
-void del_tag(const char *path, struct tag *t) {
+void del_tag(const char *path, tag *t) {
   int fd;
   uid_t uid;
   if (!is_tag_user(&fd, &uid)) return;
@@ -78,7 +78,7 @@ char is_tagged(const char *path) {
   return 0;
 }
 
-char has_tag(const char *path, struct tag *t) {
+char has_tag(const char *path, tag *t) {
   char l[TAILLE_LIST_ATTR];
   snprintf(l, TAILLE_LIST_ATTR, "user.%u.%s", getuid(), t->name);
   if (getxattr(path, l, NULL, 0) >= 0) return 1;
@@ -115,16 +115,14 @@ void add_user() {
   close(fd);
 }
 
-struct tag *rechercheTag(char tag[TAILLE_TAG]) {
-  return initTag(tag);
-}
+tag *rechercheTag(char tag[TAILLE_TAG]) { return initTag(tag); }
 
 void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij) {
   int pos = 0;
   for (int i = 0; i < nbFichierEcoute; i++) {
     char test = 1;
     for (int j = 0; j < size_conj; j++) {
-      struct tag *c = rechercheTag(conj[j]);
+      tag *c = rechercheTag(conj[j]);
       if (!has_tag(fichierEcoute[i], c)) {
         free(c);
         test = 0;
@@ -132,7 +130,7 @@ void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij) {
       }
     }
     for (int j = 0; j < size_dij; j++) {
-      struct tag *d = rechercheTag(dij[j]);
+      tag *d = rechercheTag(dij[j]);
       if (has_tag(fichierEcoute[i], d)) {
         free(d);
         test = 0;
