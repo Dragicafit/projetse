@@ -115,7 +115,16 @@ void add_user() {
   close(fd);
 }
 
-tag *rechercheTag(char tag[TAILLE_TAG]) { return initTag(tag); }
+tag *rechercheTag(char t[TAILLE_TAG]) {
+  for (int i = 0; i < &tag_length; i++) {
+    if (strcmp(list_tag[i]->name, t)) {
+      return tags[i];
+    }
+  }
+  tag *new_tag = initTag(t);
+  list_tag[tag_lentgh++] = new_tag;
+  return new_tag;
+}
 
 void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij) {
   for (int i = 0; i < nbFichierEcoute; i++) {

@@ -30,5 +30,5 @@ void createHierarchieFile(tag *t[], int t_length);
 void createHierarchie(GKeyFile *key_file, tag *t);
 void readHierarchieFile(tag *tags[], int *tags_length);
 void createTagsHierarchie(GKeyFile *key_file, GError *error, tag *t);
-tag *rechercheTag(char tag[TAILLE_TAG]);
+tag *rechercheTag(char t[TAILLE_TAG]);
 #endif

@@ -18,6 +18,8 @@
 #define TAILLE_ATTR TAILLE_TAG + TAILLE_USER + 1
 #define ENFANT_MAX 124
 
+extern tag *list_tag[TAILLE_TAG];
+extern int tag_lentgh;
 extern char fichierEcoute[TAILLE_FICHIER_ECOUTE][TAILLE_PATH];
 extern size_t nbFichierEcoute;
 

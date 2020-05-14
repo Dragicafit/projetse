@@ -17,6 +17,8 @@ static gchar **file_del;
 static gchar **tag_conj;
 static gchar **tag_dij;
 static gchar **l_tag;
+static gchar *tag_parent;
+static gchar **tag_enfant;
 static gboolean user = FALSE;
 static gboolean show = FALSE;
 
@@ -34,10 +36,16 @@ static GOptionEntry entries[] = {
      "Liste de tag que le fichier ne doit pas avoir", NULL},
     {"add_user", 'u', 0, G_OPTION_ARG_NONE, &user, "Vous ajoute aux membres",
      NULL},
+    {"creer hierarchie", 'p', 0, G_OPTION_ARG_STRING, &tag_parent,
+     "Créer une hierarchie de tag parent / [liste d'enfants]", NULL},
+    {"creer hierarchie", 'e', 0, G_OPTION_ARG_STRING_ARRAY, &tag_enfant,
+     "Créer une hierarchie de tag parent / [liste d'enfants]", NULL},
     {NULL}};
 
 char fichierEcoute[TAILLE_FICHIER_ECOUTE][TAILLE_PATH];
 size_t nbFichierEcoute;
+tag *list_tag[TAILLE_TAG];
+int tag_lentgh;
 
 int main(int argc, char *argv[]) {
   nbFichierEcoute = 0;
@@ -55,6 +63,7 @@ int main(int argc, char *argv[]) {
   int s_conj = tag_conj != NULL ? g_strv_length(tag_conj) : 0;
   int s_dij = tag_dij != NULL ? g_strv_length(tag_dij) : 0;
   int s_tag = l_tag != NULL ? g_strv_length(l_tag) : 0;
+  int s_enfant = tag_enfant != NULL ? g_strv_length(tag_enfant) : 0;
 
   if (user) {
     add_user();
@@ -78,7 +87,18 @@ int main(int argc, char *argv[]) {
   }
   if (show && (s_conj > 0 || s_dij > 0)) {
     parcoursDossier("/tmp");
+    readHierarchieFile(list_tag, &tag_lentgh);
     show_by_tag(tag_conj, tag_dij, s_conj, s_dij);
+    return 0;
+  }
+  if (strcmp(tag_parent, "") != 0 && s_enfant > 0) {
+    readHierarchieFile(list_tag, &tag_lentgh);
+    tag *parent = rechercheTag(tag_parent);
+    for (int i = 0; i < s_enfant; i++) {
+      parent->enfants[parent->nbEnfant++] = rechercheTag(tag_enfant[i]);
+    }
+    g_autoptr(GKeyFile) key_file = g_key_file_new();
+    createHierarchie(key_file, parent);
     return 0;
   }
   return 0;
