@@ -119,9 +119,7 @@ struct tag *rechercheTag(char tag[TAILLE_TAG]) {
   return initTag(tag);
 }
 
-void show_by_tag(char conj[TAILLE_LIST_ATTR][TAILLE_TAG],
-                 char dij[TAILLE_LIST_ATTR][TAILLE_TAG], int size_conj,
-                 int size_dij) {
+void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij) {
   int pos = 0;
   for (int i = 0; i < nbFichierEcoute; i++) {
     char test = 1;

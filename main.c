@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/inotify.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -37,11 +36,11 @@ static GOptionEntry entries[] = {
      NULL},
     {NULL}};
 
-char dossierEcoute[TAILLE_DOSSIER_ECOUTE_MAX][TAILLE_PATH];
-char fichierEcoute[TAILLE_FICHIER_ECOUTE_MAX][TAILLE_PATH];
+char fichierEcoute[TAILLE_FICHIER_ECOUTE][TAILLE_PATH];
 size_t nbFichierEcoute;
 
 int main(int argc, char *argv[]) {
+  nbFichierEcoute = 0;
   GError *error = NULL;
   GOptionContext *context;
   context = g_option_context_new("- test");
@@ -60,27 +59,27 @@ int main(int argc, char *argv[]) {
   if (user) {
     add_user();
     return 0;
-  } else if (s_add > 0 && s_tag > 0) {
+  }
+  if (s_add > 0 && s_tag > 0) {
     for (int i = 0; i < s_add; i++) {
-      for (int j = 0; j < s_tag; i++) {
-        add_tag(file_add[i], l_tag[j]);
+      for (int j = 0; j < s_tag; j++) {
+        add_tag(file_add[i], initTag(l_tag[j]));
       }
     }
     return 0;
-  } else if (s_del > 0 && s_tag > 0) {
+  }
+  if (s_del > 0 && s_tag > 0) {
     for (int i = 0; i < s_del; i++) {
-      for (int j = 0; j < s_tag; i++) {
-        del_tag(file_del[i], l_tag[j]);
+      for (int j = 0; j < s_tag; j++) {
+        del_tag(file_del[i], initTag(l_tag[j]));
       }
     }
     return 0;
-
-  } else if (show && (s_conj > 0 || s_dij > 0)) {
+  }
+  if (show && (s_conj > 0 || s_dij > 0)) {
+    parcoursDossier("/tmp");
     show_by_tag(tag_conj, tag_dij, s_conj, s_dij);
     return 0;
   }
-  int inotifyFd = inotify_init();
-  if (inotifyFd == -1) handle_error("inotify_init");
-  parcoursDossier(inotifyFd, "/tmp");
   return 0;
 }

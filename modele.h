@@ -2,7 +2,6 @@
 #define DEF_MEDELE
 
 #include <glib.h>
-#include <sys/inotify.h>
 
 #include "constantes.h"
 
@@ -23,13 +22,8 @@ char is_tag_user(int *fd, uid_t *uid);
 void add_user();
 void cp_tag(char *f, char *target);
 char has_tag(const char *path, struct tag *t);
-void show_by_tag(char conj[TAILLE_LIST_ATTR][TAILLE_TAG],
-                 char dij[TAILLE_LIST_ATTR][TAILLE_TAG], int size_conj,
-                 int size_dij);
-void parcoursDossier(int inotifyFd, char *basePath);
-void verification(int inotifyFd, struct inotify_event *event);
-void listenFichier(int inotifyFd);
-void ajouteDossier(int inotifyFd, char path[TAILLE_PATH]);
+void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij);
+void parcoursDossier(char *basePath);
 void ajouteFicher(char path[TAILLE_PATH]);
 void createHierarchieFile(struct tag *t[], int t_length);
 void createHierarchie(g_autoptr(GKeyFile) key_file, struct tag *t);
