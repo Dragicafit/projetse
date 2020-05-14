@@ -2,6 +2,7 @@
 #define DEF_MEDELE
 
 #include <glib.h>
+#include <glib/gprintf.h>
 
 #include "constantes.h"
 
@@ -26,9 +27,8 @@ void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij);
 void parcoursDossier(char *basePath);
 void ajouteFicher(char path[TAILLE_PATH]);
 void createHierarchieFile(tag *t[], int t_length);
-void createHierarchie(g_autoptr(GKeyFile) key_file, tag *t);
+void createHierarchie(GKeyFile *key_file, tag *t);
 void readHierarchieFile(tag *tags[], int *tags_length);
-void createTagsHierarchie(g_autoptr(GKeyFile) key_file, g_autoptr(GError) error,
-                          tag *t);
+void createTagsHierarchie(GKeyFile *key_file, GError *error, tag *t);
 tag *rechercheTag(char tag[TAILLE_TAG]);
 #endif

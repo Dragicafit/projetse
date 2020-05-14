@@ -38,7 +38,7 @@ void createHierarchieFile(tag *t[], int t_length) {
   }
 }
 
-void createHierarchie(g_autoptr(GKeyFile) key_file, tag *t) {
+void createHierarchie(GKeyFile *key_file, tag *t) {
   int i;
   gchar *list[ENFANT_MAX];
   for (i = 0; i < t->nbEnfant; i++) {
@@ -46,7 +46,8 @@ void createHierarchie(g_autoptr(GKeyFile) key_file, tag *t) {
     createHierarchie(key_file, t->enfants[i]);
   }
   if (i == 0) return;
-  g_key_file_set_string_list(key_file, "tags", t->name, list, t->nbEnfant);
+  g_key_file_set_string_list(key_file, "tags", t->name,
+                             (const gchar *const *)list, t->nbEnfant);
 }
 
 void readHierarchieFile(tag *tags[], int *tags_length) {
@@ -73,6 +74,11 @@ void readHierarchieFile(tag *tags[], int *tags_length) {
 
   gsize len;
   g_autofree gchar **val = g_key_file_get_keys(key_file, "tags", &len, &error);
+  if (val == NULL && !g_error_matches(error, G_KEY_FILE_ERROR,
+                                      G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+    g_warning("Error finding key in key file: %s", error->message);
+    return;
+  }
 
   for (int i = 0; i < len; i++) {
     char name[TAILLE_TAG];
@@ -88,18 +94,9 @@ void readHierarchieFile(tag *tags[], int *tags_length) {
     *tags_length = i;
     createTagsHierarchie(key_file, error, tags[i]);
   }
-
-  if (val == NULL && !g_error_matches(error, G_KEY_FILE_ERROR,
-                                      G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
-    g_warning("Error finding key in key file: %s", error->message);
-    return;
-  } else if (val == NULL) {
-    val = g_strdup("default-value");
-  }
 }
 
-void createTagsHierarchie(g_autoptr(GKeyFile) key_file, g_autoptr(GError) error,
-                          tag *t) {
+void createTagsHierarchie(GKeyFile *key_file, GError *error, tag *t) {
   gsize len;
   g_autofree gchar **val =
       g_key_file_get_string_list(key_file, "tags", t->name, &len, &error);
