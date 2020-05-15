@@ -20,11 +20,6 @@ S'ajouter aux membres :
 ./main -u
 ```
 
-Pour afficher la liste des utilisateurs :
-```bash
-cat .users
-```
-
 Ajouter un tag à un fichier :
 
 ```bash
