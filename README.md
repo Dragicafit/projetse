@@ -1,6 +1,6 @@
 # Projet System d'exploitation 
 
-Ce projet à été réalisé par Berthel Antoine, Herbet Damien et Payet Tom.
+Ce projet a été réalisé par Berthel Antoine, Herbet Damien et Payet Tom.
 
 ## Compilation
 
