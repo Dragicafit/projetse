@@ -68,7 +68,6 @@ int main(int argc, char *argv[]) {
   int s_enfant = tag_enfant != NULL ? g_strv_length(tag_enfant) : 0;
   char t_p = strcmp(tag_parent, "") != 0;
 
-  for (int i = 0; i < argc; i++) printf(": %s\n", argv[i]);
   if (cp) cp_tag(argc - 2, &argv[2]);
 
   if (add_u) {
