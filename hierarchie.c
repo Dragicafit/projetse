@@ -77,7 +77,7 @@ void readHierarchieFile() {
 
   for (int i = 0; i < len; i++) {
     char name[TAILLE_TAG];
-    s = snprintf(name, TAILLE_TAG, "%s", val[i]);
+    int s = snprintf(name, TAILLE_TAG, "%s", val[i]);
     if (s < 0) handle_error("snprintf error");
     if (s >= TAILLE_PATH) {
       perror("snprintf error");
