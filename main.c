@@ -17,10 +17,9 @@ static gchar **file_del;
 static gchar **tag_conj;
 static gchar **tag_dij;
 static gchar **l_tag;
-static gchar *tag_parent;
+static gchar *tag_parent = "";
 static gchar **tag_enfant;
 static gboolean user = FALSE;
-static gboolean show = FALSE;
 
 static GOptionEntry entries[] = {
     {"add_tag", 'a', 0, G_OPTION_ARG_FILENAME_ARRAY, &file_add,
@@ -28,8 +27,6 @@ static GOptionEntry entries[] = {
     {"tag", 't', 0, G_OPTION_ARG_STRING_ARRAY, &l_tag, NULL, NULL},
     {"del_tag", 'd', 0, G_OPTION_ARG_FILENAME_ARRAY, &file_del,
      "Supprimer des tags d'un fichier", "D"},
-    {"list_files_with_tag", 's', 0, G_OPTION_ARG_NONE, &show,
-     "Afficher les fichiers qui ont le tag", NULL},
     {"conjonction", 'c', 0, G_OPTION_ARG_STRING_ARRAY, &tag_conj,
      "Liste de tag que le fichier doit avoir", NULL},
     {"disjonction", 'n', 0, G_OPTION_ARG_STRING_ARRAY, &tag_dij,
@@ -44,8 +41,8 @@ static GOptionEntry entries[] = {
 
 char fichierEcoute[TAILLE_FICHIER_ECOUTE][TAILLE_PATH];
 size_t nbFichierEcoute;
-tag *list_tag[TAILLE_TAG];
-int tag_length;
+tag *list_tags[TAILLE_LIST_TAG];
+int tags_length;
 
 int main(int argc, char *argv[]) {
   nbFichierEcoute = 0;
@@ -64,7 +61,7 @@ int main(int argc, char *argv[]) {
   int s_dij = tag_dij != NULL ? g_strv_length(tag_dij) : 0;
   int s_tag = l_tag != NULL ? g_strv_length(l_tag) : 0;
   int s_enfant = tag_enfant != NULL ? g_strv_length(tag_enfant) : 0;
-  int t_p = tag_parent != NULL ? strcmp(tag_parent, "") : 0;
+  char t_p = strcmp(tag_parent, "") != 0;
 
   if (user) {
     add_user();
@@ -86,21 +83,41 @@ int main(int argc, char *argv[]) {
     }
     return 0;
   }
-  if (show && (s_conj > 0 || s_dij > 0)) {
+  if (s_conj > 0 && s_dij > 0 && s_conj < TAILLE_CONJ && s_dij < TAILLE_CONJ) {
+    char nconj[TAILLE_CONJ][TAILLE_TAG];
+    for (int i = 0; i < s_conj; i++) {
+      if (strlen(tag_conj[i]) > TAILLE_TAG) continue;
+      strcpy(nconj[i], tag_conj[i]);
+    }
+    char ndij[TAILLE_CONJ][TAILLE_TAG];
+    for (int i = 0; i < s_dij; i++) {
+      if (strlen(tag_dij[i]) > TAILLE_TAG) continue;
+      strcpy(ndij[i], tag_dij[i]);
+    }
     parcoursDossier("/tmp");
-    readHierarchieFile(list_tag, &tag_length);
-    show_by_tag(tag_conj, tag_dij, s_conj, s_dij);
+    readHierarchieFile();
+    show_by_tag(nconj, ndij, s_conj, s_dij);
     return 0;
   }
 
-  if (t_p != 0 && s_enfant > 0) {
-    readHierarchieFile(list_tag, &tag_length);
+  if (t_p && s_enfant > 0) {
+    readHierarchieFile();
     tag *parent = rechercheTag(tag_parent);
+    printf("Tag : %d\n", list_tags[0]->nbEnfant);
     for (int i = 0; i < s_enfant; i++) {
-      parent->enfants[parent->nbEnfant++] = rechercheTag(tag_enfant[i]);
+      if (parent->nbEnfant >= ENFANT_MAX) break;
+      tag *enfant = rechercheTag(tag_enfant[i]);
+      char out = 0;
+      for (int j = 0; j < parent->nbEnfant; j++) {
+        if (parent->enfants[j] == enfant) {
+          out = 1;
+          break;
+        }
+      }
+      if (out) continue;
+      parent->enfants[parent->nbEnfant++] = enfant;
     }
-    g_autoptr(GKeyFile) key_file = g_key_file_new();
-    createHierarchie(key_file, parent);
+    createHierarchieFile();
     return 0;
   }
   return 0;

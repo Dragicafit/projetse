@@ -116,33 +116,32 @@ void add_user() {
 }
 
 tag *rechercheTag(char t[TAILLE_TAG]) {
-  for (int i = 0; i < tag_length; i++) {
-    if (strcmp(list_tag[i]->name, t)) {
-      return list_tag[i];
+  for (int i = 0; i < tags_length; i++) {
+    if (strcmp(list_tags[i]->name, t) == 0) {
+      return list_tags[i];
     }
   }
   tag *new_tag = initTag(t);
-  list_tag[tag_length++] = new_tag;
+  if (tags_length < TAILLE_LIST_TAG) list_tags[tags_length++] = new_tag;
   return new_tag;
 }
 
-void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij) {
+void show_by_tag(char conj[TAILLE_CONJ][TAILLE_TAG],
+                 char dij[TAILLE_CONJ][TAILLE_TAG], int size_conj,
+                 int size_dij) {
   for (int i = 0; i < nbFichierEcoute; i++) {
     char test = 1;
     for (int j = 0; j < size_conj; j++) {
       tag *c = rechercheTag(conj[j]);
       if (!has_tag(fichierEcoute[i], c)) {
-        free(c);
         test = 0;
-        break;
       }
     }
+    if (!test) continue;
     for (int j = 0; j < size_dij; j++) {
       tag *d = rechercheTag(dij[j]);
       if (has_tag(fichierEcoute[i], d)) {
-        free(d);
         test = 0;
-        break;
       }
     }
     if (test) printf("%s\n", fichierEcoute[i]);

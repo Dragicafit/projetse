@@ -12,7 +12,7 @@
 #include "constantes.h"
 #include "modele.h"
 
-void createHierarchieFile(tag *t[], int t_length) {
+void createHierarchieFile() {
   const char *homedir = getenv("HOME");
   if ((homedir = getenv("HOME")) == NULL) {
     homedir = getpwuid(getuid())->pw_dir;
@@ -28,8 +28,8 @@ void createHierarchieFile(tag *t[], int t_length) {
   g_autoptr(GKeyFile) key_file = g_key_file_new();
   g_autoptr(GError) error = NULL;
 
-  for (int i = 0; i < t_length; i++) {
-    createHierarchie(key_file, t[i]);
+  for (int i = 0; i < tags_length; i++) {
+    createHierarchie(key_file, list_tags[i]);
   }
 
   if (!g_key_file_save_to_file(key_file, path, &error)) {
@@ -43,14 +43,13 @@ void createHierarchie(GKeyFile *key_file, tag *t) {
   gchar *list[ENFANT_MAX];
   for (i = 0; i < t->nbEnfant; i++) {
     list[i] = t->enfants[i]->name;
-    createHierarchie(key_file, t->enfants[i]);
   }
   if (i == 0) return;
   g_key_file_set_string_list(key_file, "tags", t->name,
                              (const gchar *const *)list, t->nbEnfant);
 }
 
-void readHierarchieFile(tag *tags[], int *tags_length) {
+void readHierarchieFile() {
   const char *homedir;
   if ((homedir = getenv("HOME")) == NULL) {
     homedir = getpwuid(getuid())->pw_dir;
@@ -89,10 +88,8 @@ void readHierarchieFile(tag *tags[], int *tags_length) {
       return;
     }
 
-    tag *newTag = initTag(name);
-    tags[i] = newTag;
-    *tags_length = i;
-    createTagsHierarchie(key_file, error, tags[i]);
+    tag *newTag = rechercheTag(name);
+    createTagsHierarchie(key_file, error, newTag);
   }
 }
 
@@ -100,9 +97,8 @@ void createTagsHierarchie(GKeyFile *key_file, GError *error, tag *t) {
   gsize len;
   g_autofree gchar **val =
       g_key_file_get_string_list(key_file, "tags", t->name, &len, &error);
-  t->nbEnfant = len;
   for (int i = 0; i < len; i++) {
-    t->enfants[i] = initTag(val[i]);
-    createTagsHierarchie(key_file, error, t->enfants[i]);
+    if (t->nbEnfant >= ENFANT_MAX) break;
+    t->enfants[t->nbEnfant++] = rechercheTag(val[i]);
   }
 }

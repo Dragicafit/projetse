@@ -23,12 +23,14 @@ char is_tag_user(int *fd, uid_t *uid);
 void add_user();
 void cp_tag(char *f, char *target);
 char has_tag(const char *path, tag *t);
-void show_by_tag(gchar **conj, gchar **dij, int size_conj, int size_dij);
+void show_by_tag(char conj[TAILLE_CONJ][TAILLE_TAG],
+                 char dij[TAILLE_CONJ][TAILLE_TAG], int size_conj,
+                 int size_dij);
 void parcoursDossier(char *basePath);
 void ajouteFicher(char path[TAILLE_PATH]);
-void createHierarchieFile(tag *t[], int t_length);
+void createHierarchieFile();
 void createHierarchie(GKeyFile *key_file, tag *t);
-void readHierarchieFile(tag *tags[], int *tags_length);
+void readHierarchieFile();
 void createTagsHierarchie(GKeyFile *key_file, GError *error, tag *t);
 tag *rechercheTag(char t[TAILLE_TAG]);
 #endif

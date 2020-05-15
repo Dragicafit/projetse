@@ -40,7 +40,7 @@ Supprimer des tags d'un fichier:
 Afficher les fichiers qui ont le tag:
 
 ```bash
-./main -s -c [liste de tag (conjonction)] -n [liste de tag (disjonction)]
+./main -c [liste de tag (conjonction)] -n [liste de tag (disjonction)]
 ```
 
 Creer une hierarchie entre les tags:
