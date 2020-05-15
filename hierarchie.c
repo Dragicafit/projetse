@@ -12,18 +12,23 @@
 #include "constantes.h"
 #include "modele.h"
 
-void createHierarchieFile() {
+char getPathHierarchie(char path[TAILLE_PATH]) {
   const char *homedir = getenv("HOME");
   if ((homedir = getenv("HOME")) == NULL) {
     homedir = getpwuid(getuid())->pw_dir;
   }
-  char path[TAILLE_PATH];
   int s = snprintf(path, TAILLE_PATH, "%s/.hierarchie", homedir);
   if (s < 0) handle_error("snprintf error");
   if (s >= TAILLE_PATH) {
     perror("snprintf error");
-    return;
+    return -1;
   }
+  return 0;
+}
+
+void createHierarchieFile() {
+  char path[TAILLE_PATH];
+  if (getPathHierarchie(path) < 0) return;
 
   g_autoptr(GKeyFile) key_file = g_key_file_new();
   g_autoptr(GError) error = NULL;
@@ -50,17 +55,8 @@ void createHierarchie(GKeyFile *key_file, tag *t) {
 }
 
 void readHierarchieFile() {
-  const char *homedir;
-  if ((homedir = getenv("HOME")) == NULL) {
-    homedir = getpwuid(getuid())->pw_dir;
-  }
   char path[TAILLE_PATH];
-  int s = snprintf(path, TAILLE_PATH, "%s/.hierarchie", homedir);
-  if (s < 0) handle_error("snprintf error");
-  if (s >= TAILLE_PATH) {
-    perror("snprintf error");
-    return;
-  }
+  if (getPathHierarchie(path) < 0) return;
 
   g_autoptr(GError) error = NULL;
   g_autoptr(GKeyFile) key_file = g_key_file_new();

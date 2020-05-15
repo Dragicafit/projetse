@@ -19,8 +19,9 @@ char isEnfant(tag *parent, tag *fils);
 void add_tag(const char *path, tag *t);
 void del_tag(const char *path, tag *t);
 char is_tagged(const char *path);
-char is_tag_user(int *fd, uid_t *uid);
+char is_tag_user();
 void add_user();
+void remove_user();
 void cp_tag(char *f, char *target);
 char has_tag(const char *path, tag *t);
 void show_by_tag(char conj[TAILLE_CONJ][TAILLE_TAG],
@@ -28,9 +29,11 @@ void show_by_tag(char conj[TAILLE_CONJ][TAILLE_TAG],
                  int size_dij);
 void parcoursDossier(char *basePath);
 void ajouteFicher(char path[TAILLE_PATH]);
+char getPathHierarchie(char path[TAILLE_PATH]);
 void createHierarchieFile();
 void createHierarchie(GKeyFile *key_file, tag *t);
 void readHierarchieFile();
 void createTagsHierarchie(GKeyFile *key_file, GError *error, tag *t);
 tag *rechercheTag(char t[TAILLE_TAG]);
+
 #endif

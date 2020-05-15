@@ -15,10 +15,8 @@
 char user[TAILLE_USER];
 
 void add_tag(const char *path, tag *t) {
-  int fd;
-  uid_t uid;
-  if (!is_tag_user(&fd, &uid)) return;
-  close(fd);
+  uid_t uid = getuid();
+  if (!is_tag_user()) return;
   char buff[TAILLE_ATTR];
   snprintf(buff, TAILLE_ATTR, "user.%u.%s", uid, t->name);
   int set = setxattr(path, buff, "", 0, 0);
@@ -52,10 +50,8 @@ void add_tag(const char *path, tag *t) {
 }
 
 void del_tag(const char *path, tag *t) {
-  int fd;
-  uid_t uid;
-  if (!is_tag_user(&fd, &uid)) return;
-  close(fd);
+  uid_t uid = getuid();
+  if (!is_tag_user()) return;
   char l[TAILLE_ATTR];
   snprintf(l, TAILLE_ATTR, "user.%u.%s", uid, t->name);
   if (removexattr(path, l) >= 0) return;
@@ -88,31 +84,31 @@ char has_tag(const char *path, tag *t) {
   return 0;
 }
 
-char is_tag_user(int *fd, uid_t *uid) {
-  *uid = getuid();
-  *fd = open(".users", O_RDWR | O_CREAT | O_APPEND, 0600);
-  if (*fd < 0) {
-    handle_error("Impossible d'ouvrir le fichier");
-  }
-  char buff[1024];
-  read(*fd, buff, sizeof(buff));
-  char id[TAILLE_USER];
-  snprintf(id, TAILLE_USER, "%u\n", *uid);
-  if (memmem(&buff, strlen(buff), id, strlen(id)) != NULL) {
-    return 1;
-  }
-  return 0;
+char is_tag_user() {
+  char path[TAILLE_PATH];
+  if (getPathHierarchie(path) < 0) return 0;
+
+  int fd = open(path, O_RDONLY);
+  if (fd < 0) return 0;
+  close(fd);
+  return 1;
 }
 
 void add_user() {
-  int fd;
-  uid_t uid;
-  if (!is_tag_user(&fd, &uid)) {
-    char id[TAILLE_USER];
-    snprintf(id, TAILLE_USER, "%u\n", uid);
-    write(fd, id, strlen(id));
-  }
+  char path[TAILLE_PATH];
+  if (getPathHierarchie(path) < 0) return;
+
+  int fd = open(path, O_CREAT, 0600);
+  if (fd < 0) handle_error("impossible de créer le fichier");
   close(fd);
+}
+
+void remove_user() {
+  char path[TAILLE_PATH];
+  if (getPathHierarchie(path) < 0) return;
+
+  int fd = remove(path);
+  if (fd < 0) handle_error("impossible de supprimer le fichier");
 }
 
 tag *rechercheTag(char t[TAILLE_TAG]) {
@@ -149,9 +145,7 @@ void show_by_tag(char conj[TAILLE_CONJ][TAILLE_TAG],
 }
 
 void cp_tag(char *f, char *target) {
-  int fd;
-  uid_t uid;
-  if (!is_tag_user(&fd, &uid)) {
+  if (!is_tag_user()) {
     execlp("cp", "cp", f, target, NULL);
     return;
   }

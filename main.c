@@ -19,7 +19,8 @@ static gchar **tag_dij;
 static gchar **l_tag;
 static gchar *tag_parent = "";
 static gchar **tag_enfant;
-static gboolean user = FALSE;
+static gboolean add_u = FALSE;
+static gboolean remove_u = FALSE;
 
 static GOptionEntry entries[] = {
     {"add_tag", 'a', 0, G_OPTION_ARG_FILENAME_ARRAY, &file_add,
@@ -31,8 +32,10 @@ static GOptionEntry entries[] = {
      "Liste de tag que le fichier doit avoir", NULL},
     {"disjonction", 'n', 0, G_OPTION_ARG_STRING_ARRAY, &tag_dij,
      "Liste de tag que le fichier ne doit pas avoir", NULL},
-    {"add_user", 'u', 0, G_OPTION_ARG_NONE, &user, "Vous ajoute aux membres",
+    {"add_user", 'u', 0, G_OPTION_ARG_NONE, &add_u, "Vous ajoute aux membres",
      NULL},
+    {"remove_user", 0, 0, G_OPTION_ARG_NONE, &remove_u,
+     "Vous retire des membres", NULL},
     {"creer_hierarchie", 'p', 0, G_OPTION_ARG_STRING, &tag_parent,
      "Créer une hierarchie de tag parent (-p) / [liste d'enfants] (-e)", NULL},
     {"creer_hierarchie", 'e', 0, G_OPTION_ARG_STRING_ARRAY, &tag_enfant,
@@ -63,8 +66,12 @@ int main(int argc, char *argv[]) {
   int s_enfant = tag_enfant != NULL ? g_strv_length(tag_enfant) : 0;
   char t_p = strcmp(tag_parent, "") != 0;
 
-  if (user) {
+  if (add_u) {
     add_user();
+    return 0;
+  }
+  if (remove_u) {
+    remove_user();
     return 0;
   }
   if (s_add > 0 && s_tag > 0) {
