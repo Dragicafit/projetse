@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
       if (strlen(tag_dij[i]) > TAILLE_TAG) continue;
       strcpy(ndij[i], tag_dij[i]);
     }
-    parcoursDossier("/tmp");
+    parcoursDossier("/");
     readHierarchieFile();
     show_by_tag(nconj, ndij, s_conj, s_dij);
     return 0;
