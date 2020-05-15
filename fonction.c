@@ -144,10 +144,15 @@ void show_by_tag(char conj[TAILLE_CONJ][TAILLE_TAG],
   }
 }
 
-void cp_tag(char *f, char *target) {
-  if (!is_tag_user()) {
-    execlp("cp", "cp", f, target, NULL);
-    return;
-  }
-  execlp("cp", "cp", "--preserve=xattr", f, target, NULL);
+void cp_tag(int argc, char *argv[]) {
+  char preserve = !!is_tag_user();
+
+  char **argv_new = calloc(argc + preserve + 2, sizeof(char *));
+
+  argv_new[0] = "cp";
+  if (preserve) argv_new[1] = "--preserve=xattr";
+  for (int i = 0; i < argc; i++) argv_new[i + preserve + 1] = argv[i];
+  argv_new[argc + preserve + 1] = NULL;
+
+  execvp("cp", argv_new);
 }

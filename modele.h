@@ -22,7 +22,7 @@ char is_tagged(const char *path);
 char is_tag_user();
 void add_user();
 void remove_user();
-void cp_tag(char *f, char *target);
+void cp_tag(int argc, char *argv[]);
 char has_tag(const char *path, tag *t);
 void show_by_tag(char conj[TAILLE_CONJ][TAILLE_TAG],
                  char dij[TAILLE_CONJ][TAILLE_TAG], int size_conj,

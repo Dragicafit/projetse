@@ -21,6 +21,7 @@ static gchar *tag_parent = "";
 static gchar **tag_enfant;
 static gboolean add_u = FALSE;
 static gboolean remove_u = FALSE;
+static gboolean cp = FALSE;
 
 static GOptionEntry entries[] = {
     {"add_tag", 'a', 0, G_OPTION_ARG_FILENAME_ARRAY, &file_add,
@@ -40,6 +41,7 @@ static GOptionEntry entries[] = {
      "Créer une hierarchie de tag parent (-p) / [liste d'enfants] (-e)", NULL},
     {"creer_hierarchie", 'e', 0, G_OPTION_ARG_STRING_ARRAY, &tag_enfant,
      "Créer une hierarchie de tag parent (-p) / [liste d'enfants] (-e)", NULL},
+    {"cp", 0, 0, G_OPTION_ARG_NONE, &cp, "alias cp", NULL},
     {NULL}};
 
 char fichierEcoute[TAILLE_FICHIER_ECOUTE][TAILLE_PATH];
@@ -65,6 +67,9 @@ int main(int argc, char *argv[]) {
   int s_tag = l_tag != NULL ? g_strv_length(l_tag) : 0;
   int s_enfant = tag_enfant != NULL ? g_strv_length(tag_enfant) : 0;
   char t_p = strcmp(tag_parent, "") != 0;
+
+  for (int i = 0; i < argc; i++) printf(": %s\n", argv[i]);
+  if (cp) cp_tag(argc - 2, &argv[2]);
 
   if (add_u) {
     add_user();
