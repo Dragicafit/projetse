@@ -67,4 +67,4 @@ On peut donc :
 
 ## Ce qu'on aurait pu ajouter
 
-Initialement, on voulait rendre notre liste de tag "unique" en cryptant chaque tag de la manière suivante: clé privée + chemin absolu du fichier.
+Initialement, on voulait rendre notre liste de tag "unique" en cryptant chaque tag de la manière suivante: clé privée + chemin absolu du fichier + tag.
