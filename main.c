@@ -25,22 +25,22 @@ static gboolean cp = FALSE;
 
 static GOptionEntry entries[] = {
     {"add_tag", 'a', 0, G_OPTION_ARG_FILENAME_ARRAY, &file_add,
-     "Ajouter des tags a un fichier", "A"},
+     "Ajouter des tags a un fichier", NULL},
     {"tag", 't', 0, G_OPTION_ARG_STRING_ARRAY, &l_tag, NULL, NULL},
     {"del_tag", 'd', 0, G_OPTION_ARG_FILENAME_ARRAY, &file_del,
-     "Supprimer des tags d'un fichier", "D"},
+     "Supprimer des tags d'un fichier", NULL},
     {"conjonction", 'c', 0, G_OPTION_ARG_STRING_ARRAY, &tag_conj,
-     "Liste de tag que le fichier doit avoir", NULL},
+     "Liste de tags que le fichier doit avoir", NULL},
     {"disjonction", 'n', 0, G_OPTION_ARG_STRING_ARRAY, &tag_dij,
-     "Liste de tag que le fichier ne doit pas avoir", NULL},
+     "Liste de tags que le fichier ne doit pas avoir", NULL},
     {"add_user", 'u', 0, G_OPTION_ARG_NONE, &add_u, "Vous ajoute aux membres",
      NULL},
     {"remove_user", 0, 0, G_OPTION_ARG_NONE, &remove_u,
      "Vous retire des membres", NULL},
     {"creer_hierarchie", 'p', 0, G_OPTION_ARG_STRING, &tag_parent,
-     "Créer une hierarchie de tag parent (-p) / [liste d'enfants] (-e)", NULL},
+     "Creer une hierarchie de tag parent (-p) / [liste d'enfants] (-e)", NULL},
     {"creer_hierarchie", 'e', 0, G_OPTION_ARG_STRING_ARRAY, &tag_enfant,
-     "Créer une hierarchie de tag parent (-p) / [liste d'enfants] (-e)", NULL},
+     "Creer une hierarchie de tag parent (-p) / [liste d'enfants] (-e)", NULL},
     {"cp", 0, 0, G_OPTION_ARG_NONE, &cp, "alias cp", NULL},
     {NULL}};
 

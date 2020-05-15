@@ -7,7 +7,7 @@ Ce projet a été réalisé par Berthel Antoine, Herbet Damien et Payet Tom.
 Pour remplacer la commande cp, il faudra executer :
 
 ```bash
-./init && . /etc/profile
+sudo ./init && . /etc/profile
 ```
 
 Pour compiler le projet il vous suffira d'executer la commande :
