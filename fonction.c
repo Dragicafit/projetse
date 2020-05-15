@@ -116,13 +116,13 @@ void add_user() {
 }
 
 tag *rechercheTag(char t[TAILLE_TAG]) {
-  for (int i = 0; i < &tag_length; i++) {
+  for (int i = 0; i < tag_length; i++) {
     if (strcmp(list_tag[i]->name, t)) {
-      return tags[i];
+      return list_tag[i];
     }
   }
   tag *new_tag = initTag(t);
-  list_tag[tag_lentgh++] = new_tag;
+  list_tag[tag_length++] = new_tag;
   return new_tag;
 }
 
